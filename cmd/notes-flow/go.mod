@@ -8,6 +8,7 @@ require main/handlers v0.0.0-00010101000000-000000000000
 
 require (
 	db_models v0.0.0-00010101000000-000000000000 // indirect
+	github.com/google/uuid v1.6.0 // indirect
 	handlers/sqlite v0.0.0-00010101000000-000000000000 // indirect
 )
 

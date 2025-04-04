@@ -5,6 +5,7 @@ type User struct {
 	Name     string
 	Username string
 	Password string
+	Uuid     string
 }
 
 type Note struct {
@@ -12,4 +13,5 @@ type Note struct {
 	Author string
 	Status string
 	Note   string
+	Uuid   string
 }

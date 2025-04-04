@@ -4,7 +4,8 @@ import (
 	"log"
 
 	models "db_models"
-	// _ "github.com/mattn/go-sqlite3"
+
+	"github.com/google/uuid"
 )
 
 func Test_connection() {
@@ -13,7 +14,16 @@ func Test_connection() {
 		Name:     "user_test",
 		Username: "@test",
 		Password: "12345",
+		Uuid:     uuid.NewString(),
 	}
-	log.Println(user.Id, user.Name, user.Username, user.Password)
+	note := models.Note{
+		Id:     1,
+		Author: "Test_User",
+		Status: "Public/Private",
+		Note:   "#1",
+		Uuid:   uuid.NewString(),
+	}
+	log.Println("[Test_user info]", user.Id, user.Name, user.Username, user.Password, user.Uuid)
+	log.Println("[Test_note info]", note.Id, note.Author, note.Status, note.Note, note.Uuid)
 	log.Println("works")
 }
