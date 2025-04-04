@@ -25,6 +25,7 @@ type User struct { //
 }
 
 /*
+
 	Note table:
 ----------------------------------------
 | ID | Author | Status | Note   | Uuid |
@@ -34,6 +35,7 @@ type User struct { //
 
 * The author and uuid fields are unique fields and should not be repeated, other fields may be repeated.
 * The status field has only 2 states: public and private.
+
 */
 
 type Note struct {
