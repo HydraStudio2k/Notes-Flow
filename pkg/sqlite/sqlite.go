@@ -49,6 +49,8 @@ func DBClose(db *gorm.DB) error { // Closes the connection to the sqlite databas
 |---------------- |
 */
 
+// +/-: indicates that this function is used in handlers
+
 // +
 func CreateUser(name string, username string, password string) bool { // Adds a new user to the sqlite database. Returns true if the user was added successfully.
 	// To add, you need to come up with a unique username; if the username already exists, adding to the database is impossible.
@@ -75,6 +77,7 @@ func CreateUser(name string, username string, password string) bool { // Adds a 
 	}
 }
 
+// -
 func UserExistence(username string, password string) bool { // Returns true if such user exists.
 	var user models.User
 
@@ -90,12 +93,28 @@ func UserExistence(username string, password string) bool { // Returns true if s
 	}
 }
 
+// +
+func GetUserUUID(username string, password string) string { // Returns the user's uuid if it is present in the database, otherwise returns an empty string.
+	var user models.User
+
+	db := DBInit()
+
+	err := db.Where("username = ? AND password = ?", username, password).First(&user).Error
+	if err != nil {
+		return ""
+	}
+	DBClose(db)
+
+	return user.Uuid
+}
+
 /*
 |-----------------|
 | NOTES FUNCTIONS |
 |-----------------|
 */
 
+// -
 func CreateNote(author string, status string, note string) bool { // Adds a new note to the sqlite database. Returns true if the note was added successfully.
 	// The add only exists if a user with the specified name already exists in the database.
 
@@ -125,6 +144,7 @@ func CreateNote(author string, status string, note string) bool { // Adds a new 
 	}
 }
 
+// -
 func GetNoteByUUID(uuid string) (models.Note, error) { // Returns a note object if the specified identifier actually exists, otherwise if nothing was found an empty object and an error will be returned.
 	var note models.Note
 	db := DBInit()
@@ -139,6 +159,7 @@ func GetNoteByUUID(uuid string) (models.Note, error) { // Returns a note object 
 	}
 }
 
+// -
 func GetPublicNotesByAuthor(author string) ([]models.Note, error) { // Returns a slice of note objects associated with a user with public status, if it actually exists, otherwise an empty slice and an error are returned.
 	var notes []models.Note
 	db := DBInit()
@@ -153,6 +174,7 @@ func GetPublicNotesByAuthor(author string) ([]models.Note, error) { // Returns a
 	}
 }
 
+// -
 func GetPrivateNotesByAuthor(author string) ([]models.Note, error) { // Returns a slice of private notes belonging to a specific author. On error, returns an empty slice and an error.
 	var notes []models.Note
 	db := DBInit()
@@ -167,6 +189,7 @@ func GetPrivateNotesByAuthor(author string) ([]models.Note, error) { // Returns 
 	}
 }
 
+// -
 func GetAllPublicNotes() ([]models.Note, error) { // Returns a slice of note objects with the status "public", otherwise returns an empty slice and an error.
 	var notes []models.Note
 	db := DBInit()
@@ -181,6 +204,7 @@ func GetAllPublicNotes() ([]models.Note, error) { // Returns a slice of note obj
 	}
 }
 
+// -
 func DeleteNoteByUUID(uuid string) error { // Deletes a note by the specified uuid.
 	db := DBInit()
 

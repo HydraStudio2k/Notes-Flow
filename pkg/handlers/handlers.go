@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 )
 
-// Main Page & NotFound Handlers
+// Main Page & NotFound Handlers (pages)
 
 func MainPageHandler(w http.ResponseWriter, r *http.Request) {
 	files := []string{
@@ -30,7 +30,7 @@ func MainPageHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Register Handlers
+// Register Handlers (user)
 
 func RegisterUserHandler(w http.ResponseWriter, r *http.Request) {
 	files := []string{
@@ -90,6 +90,76 @@ func PostformRegisterUserHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		tmpl.Execute(w, nil)
+		if err != nil {
+			log.Printf("Error while executing template: %e\n", err)
+			http.Error(w, "Internal Server Error", 500)
+			return
+		}
+	}
+}
+
+// Login Handlers (user)
+
+func GetUSerUUIDHandler(w http.ResponseWriter, r *http.Request) {
+	files := []string{
+		filepath.Join("..", "..", "ui", "html", "get_user_uuid", "form.html"),
+	}
+
+	tmpl, err := template.ParseFiles(files...)
+	if err != nil {
+		log.Printf("Error while parsing files: %e\n", err)
+		http.Error(w, "Internal Server Error", 500)
+		return
+	}
+
+	err = tmpl.Execute(w, nil)
+	if err != nil {
+		log.Printf("Error while executinf template: %e\n", err)
+		http.Error(w, "Internal Server Error", 500)
+		return
+	}
+}
+
+func GetUserUUIDPostformHandler(w http.ResponseWriter, r *http.Request) {
+	username := r.FormValue("username")
+	password := r.FormValue("password")
+
+	uuid := sqlite.GetUserUUID(username, password)
+	if uuid != "" { // If a uuid was found, we issue it to the user.
+		files := []string{
+			filepath.Join("..", "..", "ui", "html", "get_user_uuid", "successful_postform.html"),
+		}
+
+		tmpl, err := template.ParseFiles(files...)
+		if err != nil {
+			log.Printf("Error while parsing files: %e\n", err)
+			http.Error(w, "Internal Server Error", 500)
+			return
+		}
+
+		data := []string{
+			uuid,
+		}
+
+		err = tmpl.Execute(w, data[0])
+		if err != nil {
+			log.Printf("Error while executing template: %e\n", err)
+			http.Error(w, "Internal Server Error", 500)
+			return
+		}
+	} else {
+		files := []string{
+			filepath.Join("..", "..", "ui", "html", "get_user_uuid", "error_postform.html"),
+		}
+
+		tmpl, err := template.ParseFiles(files...)
+		if err != nil {
+			log.Printf("Error while parsing files: %e\n", err)
+			http.Error(w, "Internal Server Error", 500)
+			return
+		}
+
+		err = tmpl.Execute(w, nil)
 		if err != nil {
 			log.Printf("Error while executing template: %e\n", err)
 			http.Error(w, "Internal Server Error", 500)
