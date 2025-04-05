@@ -11,30 +11,6 @@ import (
 	"gorm.io/gorm"
 )
 
-func Test_connection() { // Test function for checks, in the future it will be removed.
-	user := models.User{
-		Id:       1,
-		Name:     "user_test",
-		Username: "@test",
-		Password: "12345",
-		Uuid:     uuid.NewString(),
-	}
-	note := models.Note{
-		Id:     1,
-		Author: "Test_User",
-		Status: "Public/Private",
-		Note:   "#1",
-		Uuid:   uuid.NewString(),
-	}
-
-	db := DBInit()
-	DBClose(db)
-
-	log.Println("[Test_user info]", user.Id, user.Name, user.Username, user.Password, user.Uuid)
-	log.Println("[Test_note info]", note.Id, note.Author, note.Status, note.Note, note.Uuid)
-	log.Println("works")
-}
-
 /*
 |--------------------|
 | DATABASE FUNCTIONS |
@@ -73,6 +49,7 @@ func DBClose(db *gorm.DB) error { // Closes the connection to the sqlite databas
 |---------------- |
 */
 
+// +
 func CreateUser(name string, username string, password string) bool { // Adds a new user to the sqlite database. Returns true if the user was added successfully.
 	// To add, you need to come up with a unique username; if the username already exists, adding to the database is impossible.
 
@@ -84,20 +61,16 @@ func CreateUser(name string, username string, password string) bool { // Adds a 
 
 	if len(users) == 0 { // If there are no users with such a username, addiing a new user.
 		user_uuid := uuid.NewString() // Create a unique user id.
-
 		db.Create(&models.User{
 			Name:     name,
 			Username: username,
 			Password: password,
 			Uuid:     user_uuid,
 		})
-
 		DBClose(db)
-
 		return true
 	} else {
 		DBClose(db)
-
 		return false
 	}
 }
